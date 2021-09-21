@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SeriesFormRequest;
 use Illuminate\Http\Request;
 use App\Models\Serie;
+use App\Services\CreateSerie;
 
 class SeriesController extends Controller
 {
@@ -26,17 +27,19 @@ class SeriesController extends Controller
         return view('series.create');
     }
 
-    public function store(SeriesFormRequest $request)
-    {
-        $name = $request->name;
-        $serie = Serie::create([
-            'name' => $name
-        ]);
+    public function store(
+        SeriesFormRequest $request, CreateSerie $createSerie
+    ) {
+        $serie = $createSerie->create(
+            $request->name, 
+            $request->qnt_season, 
+            $request->ep_by_season
+        );
 
         $request->session()
             ->flash(
                 'message',
-                "Série {$serie->name} cadastrada com sucesso!"
+                "Série {$serie->name}, temporadas e episódios cadastrados com sucesso!"
             );
 
         return redirect()->route('list_series');
@@ -44,7 +47,7 @@ class SeriesController extends Controller
 
     public function destroy(Request $request)
     {
-        Serie::where('id_serie', $request->id_serie)->delete();
+        Serie::where('id', $request->id)->delete();
         
         $request->session()
             ->flash(

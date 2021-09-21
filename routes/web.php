@@ -23,3 +23,5 @@ Route::get('/series/create', 'App\Http\Controllers\SeriesController@create')
     ->name('create_series');
 Route::post('/series/create', 'App\Http\Controllers\SeriesController@store');
 Route::delete('/series/{id_serie}', 'App\Http\Controllers\SeriesController@destroy');
+
+Route::get('/series/{id_serie}/seasons', 'App\Http\Controllers\SeasonsController@index');
