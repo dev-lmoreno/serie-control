@@ -2,26 +2,46 @@
 
 namespace App\Services;
 
+use App\Models\Season;
 use App\Models\Serie;
+use Illuminate\Support\Facades\DB;
 
 class CreateSerie
 {
     public function create(
         String $name, 
-        int $qnt_temp,
-        int $ep_by_season
+        int $qntSeason,
+        int $epBySeason
     ): Serie {
-        $serie = Serie::create([
-            'name' => $name
-        ]);
-
-        for ($i = 1; $i <= $qnt_temp; $i++) {
-            $season = $serie->seasons()->create(['number' => $i]);
-                for ($j=1; $j <= $ep_by_season; $j++) { 
-                    $season->episodes()->create(['number' => $j]);
-                }
-        }
+        DB::beginTransaction();
+        $serie = Serie::create(['name' => $name]);
+        $this->createSeason($serie, $qntSeason, $epBySeason);
+        DB::commit();
 
         return $serie;
+    }
+
+    /**
+     * @param $serie
+     * @param int $qntSeason
+     * @param int $epBySeason
+     */
+    private function createSeason(Serie $serie, int $qntSeason, int $epBySeason): void
+    {
+        for ($i = 1; $i <= $qntSeason; $i++) {
+            $season = $serie->seasons()->create(['number' => $i]);
+            $this->createEpisode($season, $epBySeason);
+        }
+    }
+
+    /**
+     * @param $season
+     * @param int $epBySeason
+     */
+    private function createEpisode(Season $season, int $epBySeason): void
+    {
+        for ($j=1; $j <= $epBySeason; $j++) { 
+            $season->episodes()->create(['number' => $j]);
+        }
     }
 }

@@ -6,20 +6,32 @@ Serie
 
 @section('content')
 
-@if (!empty($message))
-    <div class="alert alert-success">{{ $message }}</div>    
-@endif
+@include('utils.message', ['message' => $message])
 
 <a href="{{ route('create_series') }}" class="btn btn-dark mb-2">Create</a>
 
 <ul class="list-group">
     @foreach ($series as $serie)
         <li class="list-group-item d-flex justify-content-between align-items-center">
-           {{ $serie->name }}
+            <span id="name-serie-{{ $serie->id }}">{{ $serie->name }}</span>
+            
+            <div class="input-group w-50" hidden id="input-name-serie-{{ $serie->id }}">
+                <input type="text" class="form-control" value="{{ $serie->name }}">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" onclick="edit({{ $serie->id }})">
+                        CONFIRMAR
+                        {{-- <i class="fas fa-check"></i> --}}
+                    </button>
+                    @csrf
+                </div>
+            </div>
            
            <span class="d-flex">
+            <button class="btn-info btn-sm mr-1" onClick="toggleInput({{$serie->id}})">EDITAR</button>
+            
             <a href="/series/{{ $serie->id }}/seasons" class="btn btn-info btn-sm">
-                <i class="fas fa-external-link-alt"></i>
+                VER TEMP
+                {{-- <i class="fas fa-external-link-alt"></i> --}}
             </a>
 
             <form method="post" action="/series/{{ $serie->id }}"
@@ -32,4 +44,41 @@ Serie
         </li>
     @endforeach
 </ul>
+
+<script>
+    function toggleInput(serieId) {
+        const inputNameSerieEl = document.getElementById(`input-name-serie-${serieId}`);
+        const nameSerieEl = document.getElementById(`name-serie-${serieId}`);
+
+        if (nameSerieEl.hasAttribute('hidden')) {
+            nameSerieEl.removeAttribute('hidden');
+            inputNameSerieEl.hidden = true;
+        } else {
+            inputNameSerieEl.removeAttribute('hidden');
+            nameSerieEl.hidden = true;
+        }
+
+        
+    }
+
+    function edit(serieId) {
+        let formData = new FormData();
+        const name = document
+            .querySelector(`#input-name-serie-${serieId} > input`)
+            .value;
+        const token = document.querySelector('input[name="_token"]').value;
+        
+        formData.append('name', name);
+        formData.append('_token', token);
+        
+        const url = `/series/${serieId}/edit`;
+        fetch(url, {
+            body: formData,
+            method: 'POST'
+        }).then(() => {
+            toggleInput(serieId);
+            document.getElementById(`name-serie-${serieId}`).textContent = name;
+        });
+    }
+</script>
 @endsection
