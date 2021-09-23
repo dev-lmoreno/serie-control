@@ -41,3 +41,7 @@ Route::get('/mylogout', function() {
     Auth::logout();
     return redirect('/mylogin');
 });
+
+Route::get('/email', function() {
+    return new \App\Mail\NewSerie();
+});
