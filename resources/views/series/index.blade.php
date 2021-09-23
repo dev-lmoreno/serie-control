@@ -8,7 +8,9 @@ Serie
 
 @include('utils.message', ['message' => $message])
 
-<a href="{{ route('create_series') }}" class="btn btn-dark mb-2">Create</a>
+@auth
+    <a href="{{ route('create_series') }}" class="btn btn-dark mb-2">Create</a>
+@endauth
 
 <ul class="list-group">
     @foreach ($series as $serie)
@@ -27,19 +29,22 @@ Serie
             </div>
            
            <span class="d-flex">
-            <button class="btn-info btn-sm mr-1" onClick="toggleInput({{$serie->id}})">EDITAR</button>
+            @auth
+                <button class="btn-info btn-sm mr-1" onClick="toggleInput({{$serie->id}})">EDITAR</button>
+            @endauth
             
             <a href="/series/{{ $serie->id }}/seasons" class="btn btn-info btn-sm">
                 VER TEMP
                 {{-- <i class="fas fa-external-link-alt"></i> --}}
             </a>
-
-            <form method="post" action="/series/{{ $serie->id }}"
-                    onsubmit="return confirm('Tem certeza que deseja remover a série {{addslashes($serie->name)}}')">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-danger btn-sm">Remove</button>
-            </form>
+            @auth
+                <form method="post" action="/series/{{ $serie->id }}"
+                        onsubmit="return confirm('Tem certeza que deseja remover a série {{addslashes($serie->name)}}')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger btn-sm">Remove</button>
+                </form>
+            @endauth
            </span>
         </li>
     @endforeach
