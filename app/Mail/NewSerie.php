@@ -11,14 +11,20 @@ class NewSerie extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $name;
+    public $qntTemp;
+    public $qntEp;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($name,$qntTemp,$qntEp)
     {
-        //
+        $this->name = $name;
+        $this->qntTemp = $qntTemp;
+        $this->qntEp = $qntEp;
     }
 
     /**
@@ -28,6 +34,6 @@ class NewSerie extends Mailable
      */
     public function build()
     {
-        return $this->view('mail.serie.newSerie');
+        return $this->markdown('mail.serie.newSerie');
     }
 }

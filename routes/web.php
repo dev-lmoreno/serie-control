@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,6 +43,20 @@ Route::get('/mylogout', function() {
     return redirect('/mylogin');
 });
 
+// email
 Route::get('/email', function() {
-    return new \App\Mail\NewSerie();
+    return new \App\Mail\NewSerie('teste',10,5);
+});
+
+Route::get('/send-email', function() {
+    $email =  new \App\Mail\NewSerie('teste',10,5);
+
+    $user = (object) [ 
+        'email' => 'lmoreno@teste.com',
+        'name' => 'Lucas'
+    ];
+
+    Mail::to($user)->send($email);
+
+    return 'Email enviado';
 });

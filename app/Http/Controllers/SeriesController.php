@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewSerie;
 use App\Http\Requests\SeriesFormRequest;
 use App\Models\Episode;
 use App\Models\Season;
 use Illuminate\Http\Request;
 use App\Models\Serie;
+use App\Models\User;
 use App\Services\CreateSerie;
 use App\Services\RemoveSerie;
+use Illuminate\Support\Facades\Mail;
 
 class SeriesController extends Controller
 {
@@ -38,6 +41,14 @@ class SeriesController extends Controller
             $request->qnt_season, 
             $request->ep_by_season
         );
+
+        // adicionando evento
+        $eventNewSerie = new NewSerie(
+            $request->name, 
+            $request->qnt_season, 
+            $request->ep_by_season
+        );
+        event($eventNewSerie);
 
         $request->session()
             ->flash(
