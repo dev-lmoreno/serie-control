@@ -36,10 +36,17 @@ class SeriesController extends Controller
     public function store(
         SeriesFormRequest $request, CreateSerie $createSerie
     ) {
+        $cover = null;
+
+        if ($request->hasFile('cover')) {
+            $cover = $request->file('cover')->store('public/serie');
+        }
+
         $serie = $createSerie->create(
             $request->name, 
             $request->qnt_season, 
-            $request->ep_by_season
+            $request->ep_by_season,
+            $cover
         );
 
         // adicionando evento

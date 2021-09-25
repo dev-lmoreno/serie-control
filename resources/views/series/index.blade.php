@@ -15,7 +15,10 @@ Serie
 <ul class="list-group">
     @foreach ($series as $serie)
         <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span id="name-serie-{{ $serie->id }}">{{ $serie->name }}</span>
+            <div>
+                <img src="{{$serie->cover_url}}" class="img-thumbnail" height="100px" width="100px">
+                <span id="name-serie-{{ $serie->id }}">{{ $serie->name }}</span>
+            </div>
             
             <div class="input-group w-50" hidden id="input-name-serie-{{ $serie->id }}">
                 <input type="text" class="form-control" value="{{ $serie->name }}">

@@ -11,10 +11,14 @@ class CreateSerie
     public function create(
         String $name, 
         int $qntSeason,
-        int $epBySeason
+        int $epBySeason,
+        ?string $cover // ? -> obrigatório ser passado o parâmetro mas podendo não ser uma string
     ): Serie {
         DB::beginTransaction();
-        $serie = Serie::create(['name' => $name]);
+        $serie = Serie::create([
+            'name' => $name, 
+            'cover' => $cover
+        ]);
         $this->createSeason($serie, $qntSeason, $epBySeason);
         DB::commit();
 
